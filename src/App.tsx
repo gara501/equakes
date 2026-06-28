@@ -1,5 +1,6 @@
 ﻿import { useCallback, useState } from 'react'
 import { EarthModel } from './components/EarthModel'
+import { SeismicScalePage } from './components/SeismicScalePage'
 import './App.css'
 
 interface LocationRequest {
@@ -8,20 +9,23 @@ interface LocationRequest {
   longitude: number
 }
 
+type AppPage = 'earth' | 'scale'
+
 function App() {
+  const [activePage, setActivePage] = useState<AppPage>('earth')
   const [locationRequest, setLocationRequest] = useState<LocationRequest | null>(null)
   const [safetyMessage, setSafetyMessage] = useState('')
   const [isLocating, setIsLocating] = useState(false)
 
-  const handleNearestEarthquake = useCallback((distanceKm: number, magnitude: number) => {
+  const handleNearestEarthquake = useCallback((distanceKm: number, magnitude: number, place: string) => {
     setSafetyMessage(
-      `El sismo mas cercano a ti fue a ${Math.round(distanceKm)}km, de magnitud ${magnitude.toFixed(1)}.`,
+      `El sismo más cercano a ti fue a ${Math.round(distanceKm)} km, de magnitud ${magnitude.toFixed(1)}, en ${place}.`,
     )
     setIsLocating(false)
   }, [])
 
   const handleLocationError = useCallback(() => {
-    setSafetyMessage('No pude obtener tu ubicacion actual.')
+    setSafetyMessage('No pude obtener tu ubicación actual.')
     setIsLocating(false)
   }, [])
 
@@ -32,7 +36,7 @@ function App() {
     }
 
     setIsLocating(true)
-    setSafetyMessage('Buscando tu ubicacion...')
+    setSafetyMessage('Buscando tu ubicación...')
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -51,27 +55,36 @@ function App() {
     )
   }
 
+  if (activePage === 'scale') {
+    return (
+      <main className="app-shell app-shell-scale">
+        <SeismicScalePage onBack={() => setActivePage('earth')} />
+      </main>
+    )
+  }
+
   return (
     <main className="app-shell">
       <section className="hero-panel" aria-labelledby="page-title">
         <div className="hero-copy">
-          <p className="eyebrow">Live geospatial view</p>
-          <h1 id="page-title">Earthquake monitoring from orbit</h1>
+          <p className="eyebrow">Vista geoespacial en vivo</p>
+          <h1 id="page-title">Visor de sismos</h1>
           <p className="lede">
-            A rotating 3D Earth model sets the main scene for exploring seismic
-            activity and global movement patterns.
+            Un modelo 3D de la Tierra permite explorar la actividad sísmica
+            reciente y sus patrones globales.
           </p>
-          <div className="stats-row" aria-label="Earth model features">
+          <div className="stats-row" aria-label="Funciones del modelo terrestre">
             <button
               className="location-check-button"
               disabled={isLocating}
               onClick={handleLocateUser}
               type="button"
             >
-              {isLocating ? 'locating...' : 'AM I save?'}
+              {isLocating ? 'ubicando...' : '¿Estoy a salvo?'}
             </button>
-            <span>Last 24 hours</span>
-            <span>Principal Events</span>
+            <button type="button" onClick={() => setActivePage('scale')}>
+              Escala sismológica
+            </button>
           </div>
           {safetyMessage ? <p className="safety-message">{safetyMessage}</p> : null}
         </div>
