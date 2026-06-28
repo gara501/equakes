@@ -158,6 +158,55 @@
   touch-action: none;
 }
 
+.scene-loader-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.scene-loader {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  min-width: 180px;
+  border: 1px solid rgba(248, 244, 236, 0.18);
+  padding: 14px 16px;
+  color: #f8f4ec;
+  background: rgba(10, 20, 32, 0.72);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+  text-align: center;
+  text-transform: lowercase;
+  backdrop-filter: blur(14px);
+}
+
+.scene-loader strong {
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+.scene-loader span {
+  color: rgba(248, 244, 236, 0.68);
+  font-size: 0.62rem;
+}
+
+.scene-loader-spinner {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(248, 244, 236, 0.2);
+  border-top-color: rgba(248, 244, 236, 0.9);
+  border-radius: 50%;
+  animation: scene-spin 0.95s linear infinite;
+}
+
+@keyframes scene-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .earth-model:active canvas {
   cursor: grabbing;
 }
@@ -406,14 +455,27 @@
 }
 
 @media (max-width: 900px) {
+  html,
   body {
+    height: auto;
     overflow: auto;
   }
 
   .app-shell,
-  .hero-panel,
-  .earth-model {
+  .hero-panel {
     min-height: 100svh;
+    height: auto;
+  }
+
+  .app-shell {
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .hero-panel {
+    overflow: visible;
+    padding-bottom: 22px;
   }
 
   .hero-panel::before {
@@ -435,7 +497,7 @@
   }
 
   .stats-row {
-    width: min(230px, 100%);
+    width: min(430px, 100%);
     margin-top: 30px;
   }
 
@@ -446,34 +508,65 @@
     font-size: 0.65rem;
   }
 
+  .earth-model {
+    position: relative;
+    inset: auto;
+    z-index: 6;
+    width: calc(100% - 44px);
+    height: auto;
+    min-height: 0;
+    margin: 0 22px 22px;
+    overflow: visible;
+    background: transparent;
+  }
+
+  .earth-model::before,
+  .earth-model::after {
+    display: none;
+  }
+
+  .earth-model canvas {
+    height: 52svh !important;
+    min-height: 340px;
+    border: 1px solid rgba(248, 244, 236, 0.18);
+    background: #0a1420;
+  }
+
   .earthquake-list {
-    left: 22px;
-    right: 22px;
+    position: relative;
+    left: auto;
+    right: auto;
     top: auto;
-    bottom: 74px;
-    width: auto;
-    max-height: 34svh;
+    bottom: auto;
+    width: 100%;
+    max-height: none;
+    margin-top: 12px;
   }
 
   .earthquake-list-items {
-    max-height: calc(34svh - 50px);
+    max-height: 42svh;
   }
 
   .earthquake-feed-status {
-    left: 22px;
+    position: relative;
+    left: auto;
     right: auto;
     top: auto;
-    bottom: 22px;
+    bottom: auto;
     min-width: 0;
-    max-width: calc(100% - 44px);
+    max-width: none;
+    width: 100%;
+    margin-top: 12px;
     font-size: 0.68rem;
   }
-.earthquake-detail {
-    left: 22px;
-    right: 22px;
-    bottom: calc(34svh + 96px);
-    width: auto;
-    max-height: 30svh;
+  .earthquake-detail {
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    max-height: none;
+    margin-top: 12px;
     overflow: auto;
     padding: 16px;
   }
@@ -508,7 +601,8 @@
     linear-gradient(90deg, rgba(248, 244, 236, 0.98) 0%, rgba(248, 244, 236, 0.9) 30%, rgba(248, 244, 236, 0.22) 50%, transparent 68%),
     radial-gradient(circle at 18% 48%, rgba(248, 244, 236, 0.76) 0 24%, transparent 52%);
 }
-.scale-page::after {
+
+.scale-page::after {
   content: '';
   position: absolute;
   inset: 20px;
@@ -712,6 +806,7 @@
   font-size: 0.72rem;
   line-height: 1.48;
 }
+
 .scale-formula span {
   color: rgba(248, 244, 236, 0.66);
   font-size: 0.68rem;
@@ -729,16 +824,23 @@
 
   .scale-page {
     min-height: 100svh;
+    overflow: visible;
+  }
+
+  .scale-page::before {
+    background:
+      linear-gradient(180deg, rgba(248, 244, 236, 0.9) 0%, rgba(248, 244, 236, 0.5) 28%, rgba(248, 244, 236, 0.08) 48%, transparent 70%);
   }
 
   .scale-copy {
     min-height: auto;
-    padding: 70px 24px 20px;
+    padding: 58px 24px 18px;
   }
 
   .scale-copy h1 {
-    max-width: 9ch;
-    font-size: clamp(3rem, 15vw, 5.6rem);
+    max-width: 8.2ch;
+    font-size: clamp(2.35rem, 11vw, 4.15rem);
+    line-height: 0.94;
   }
 
   .scale-back-button {
@@ -750,11 +852,12 @@
 
   .scale-stage {
     position: relative;
-    height: 54svh;
-    min-height: 410px;
+    height: 42svh;
+    min-height: 280px;
   }
 
   .scale-formula,
+  .scale-impact-card,
   .scale-controls {
     position: relative;
     left: auto;
@@ -765,11 +868,20 @@
     margin: 0 22px 22px;
   }
 
+  .scale-impact-card {
+    max-height: none;
+  }
+
   .scale-controls {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .scale-controls button {
     min-height: 74px;
+  }
+
+  .scene-loader {
+    min-width: 156px;
+    padding: 12px 14px;
   }
 }

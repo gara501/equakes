@@ -1,22 +1,19 @@
-﻿import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber'
+import { Html, useProgress } from '@react-three/drei'
+import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber'
 import { Bloom, EffectComposer } from '@react-three/postprocessing'
-import { Suspense, useEffect, useMemo, useRef } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import {
-  AdditiveBlending,
   BackSide,
   DirectionalLight,
   Group,
-  Mesh,
   Quaternion,
   TextureLoader,
   Vector3,
 } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import earthTextureUrl from '../../assets/models/images/0_Tierra1.jpg'
-import cloudTextureUrl from '../../assets/models/images/1_Tierra1 (Nubes).jpg'
 import {
   AUTO_ROTATION_SPEED,
-  CLOUD_ROTATION_SPEED,
   DEFAULT_CAMERA_DISTANCE,
   EARTH_RADIUS,
   MAX_CAMERA_DISTANCE,
@@ -32,10 +29,46 @@ import type {
 } from './types'
 import { latLonToVector3 } from './utils/geoUtils'
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    const mediaQuery = window.matchMedia('(max-width: 900px)')
+    const update = () => setIsMobile(mediaQuery.matches)
+
+    update()
+    mediaQuery.addEventListener('change', update)
+
+    return () => mediaQuery.removeEventListener('change', update)
+  }, [])
+
+  return isMobile
+}
+
+function SceneLoader({ label }: { label: string }) {
+  const { progress } = useProgress()
+
+  return (
+    <Html center>
+      <div className="scene-loader" role="status" aria-live="polite">
+        <div className="scene-loader-spinner" />
+        <strong>{label}</strong>
+        <span>{Math.max(5, Math.round(progress || 0))}%</span>
+      </div>
+    </Html>
+  )
+}
+
 function RotatingEarth({
   earthquakes,
   focusLocation,
   isInteractingRef,
+  isMobile,
+  onReady,
   rolesByEarthquakeId,
   selectedId,
   seismicSequences,
@@ -44,18 +77,21 @@ function RotatingEarth({
   earthquakes: EarthquakePoint[]
   focusLocation: FocusLocation | null
   isInteractingRef: { current: boolean }
+  isMobile: boolean
+  onReady: () => void
   rolesByEarthquakeId: Record<string, SeismicRoleInfo>
   selectedId: string | null
   seismicSequences: SeismicSequence[]
   onSelectEarthquake: (earthquake: EarthquakePoint) => void
 }) {
   const groupRef = useRef<Group>(null)
-  const cloudsRef = useRef<Mesh>(null)
   const focusQuaternionRef = useRef<Quaternion | null>(null)
-  const [earthTexture, cloudTexture] = useLoader(TextureLoader, [
-    earthTextureUrl,
-    cloudTextureUrl,
-  ])
+  const earthTexture = useLoader(TextureLoader, earthTextureUrl)
+  const earthSegments = isMobile ? 56 : 96
+
+  useEffect(() => {
+    onReady()
+  }, [onReady])
 
   useEffect(() => {
     if (!focusLocation) {
@@ -91,16 +127,12 @@ function RotatingEarth({
     if (!isInteractingRef.current && !focusQuaternionRef.current && groupRef.current) {
       groupRef.current.rotation.y += delta * AUTO_ROTATION_SPEED
     }
-
-    if (cloudsRef.current) {
-      cloudsRef.current.rotation.y += delta * CLOUD_ROTATION_SPEED
-    }
   })
 
   return (
     <group ref={groupRef} rotation={[0.08, -0.55, -0.12]}>
       <mesh>
-        <sphereGeometry args={[EARTH_RADIUS, 96, 96]} />
+        <sphereGeometry args={[EARTH_RADIUS, earthSegments, earthSegments]} />
         <meshStandardMaterial
           map={earthTexture}
           roughness={0.88}
@@ -109,19 +141,8 @@ function RotatingEarth({
           transparent
         />
       </mesh>
-      <mesh ref={cloudsRef}>
-        <sphereGeometry args={[1.94, 96, 96]} />
-        <meshStandardMaterial
-          alphaMap={cloudTexture}
-          blending={AdditiveBlending}
-          color="#ffffff"
-          depthWrite={false}
-          opacity={0.34}
-          transparent
-        />
-      </mesh>
       <mesh scale={2.1}>
-        <sphereGeometry args={[1, 64, 64]} />
+        <sphereGeometry args={[1, isMobile ? 40 : 64, isMobile ? 40 : 64]} />
         <meshBasicMaterial
           color="#4aa3ff"
           opacity={0.08}
@@ -238,31 +259,51 @@ export function EarthCanvas({
   seismicSequences: SeismicSequence[]
   onSelectEarthquake: (earthquake: EarthquakePoint) => void
 }) {
+  const isMobile = useIsMobile()
+  const [isSceneReady, setIsSceneReady] = useState(false)
+
   return (
-    <Canvas camera={{ fov: 38, position: [0, 0, DEFAULT_CAMERA_DISTANCE] }} dpr={[1, 2]}>
-      <color attach="background" args={['#030712']} />
-      <SceneLights />
-      <CameraControls isInteractingRef={isInteractingRef} />
-      <EffectComposer multisampling={0}>
-        <Bloom
-          intensity={1.35}
-          luminanceSmoothing={0.22}
-          luminanceThreshold={0.58}
-          mipmapBlur
-          radius={0.62}
-        />
-      </EffectComposer>
-      <Suspense fallback={null}>
-        <RotatingEarth
-          earthquakes={earthquakes}
-          focusLocation={focusLocation}
-          isInteractingRef={isInteractingRef}
-          rolesByEarthquakeId={rolesByEarthquakeId}
-          selectedId={selectedId}
-          seismicSequences={seismicSequences}
-          onSelectEarthquake={onSelectEarthquake}
-        />
-      </Suspense>
-    </Canvas>
+    <>
+      {!isSceneReady ? (
+        <div className="scene-loader-overlay" aria-hidden="true">
+          <div className="scene-loader">
+            <div className="scene-loader-spinner" />
+            <strong>Cargando globo 3D</strong>
+            <span>Preparando escena</span>
+          </div>
+        </div>
+      ) : null}
+      <Canvas
+        camera={{ fov: 38, position: [0, 0, DEFAULT_CAMERA_DISTANCE] }}
+        dpr={isMobile ? [1, 1.35] : [1, 2]}
+        gl={{ antialias: !isMobile, powerPreference: 'high-performance' }}
+      >
+        <color attach="background" args={['#030712']} />
+        <SceneLights />
+        <CameraControls isInteractingRef={isInteractingRef} />
+        <EffectComposer multisampling={0}>
+          <Bloom
+            intensity={isMobile ? 1.05 : 1.35}
+            luminanceSmoothing={0.22}
+            luminanceThreshold={0.58}
+            mipmapBlur={!isMobile}
+            radius={isMobile ? 0.42 : 0.62}
+          />
+        </EffectComposer>
+        <Suspense fallback={<SceneLoader label="Cargando globo 3D" />}>
+          <RotatingEarth
+            earthquakes={earthquakes}
+            focusLocation={focusLocation}
+            isInteractingRef={isInteractingRef}
+            isMobile={isMobile}
+            onReady={() => setIsSceneReady(true)}
+            rolesByEarthquakeId={rolesByEarthquakeId}
+            selectedId={selectedId}
+            seismicSequences={seismicSequences}
+            onSelectEarthquake={onSelectEarthquake}
+          />
+        </Suspense>
+      </Canvas>
+    </>
   )
 }
