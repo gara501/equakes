@@ -1,0 +1,366 @@
+﻿.app-shell {
+  min-height: 100svh;
+  color: var(--planhat-ink);
+  background:
+    linear-gradient(90deg, rgba(248, 244, 236, 0.88) 0%, rgba(248, 244, 236, 0.36) 34%, transparent 58%),
+    var(--planhat-paper);
+  overflow: hidden;
+}
+
+.hero-panel {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-height: 100svh;
+  overflow: hidden;
+}
+
+.hero-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(248, 244, 236, 0.92) 0%, rgba(248, 244, 236, 0.68) 28%, rgba(248, 244, 236, 0.08) 50%, transparent 68%),
+    radial-gradient(circle at 82% 48%, transparent 0 24%, rgba(196, 84, 34, 0.1) 25%, transparent 36%);
+}
+
+.hero-panel::after {
+  content: '';
+  position: absolute;
+  inset: 20px;
+  z-index: 4;
+  border: 1px solid var(--planhat-line);
+  pointer-events: none;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  width: min(620px, calc(100% - 40px));
+  min-height: 100svh;
+  padding: 88px 0 88px clamp(24px, 6vw, 84px);
+  text-align: left;
+}
+
+.eyebrow {
+  color: var(--planhat-clay);
+  font-size: clamp(0.72rem, 0.85vw, 0.92rem);
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+}
+
+.hero-copy h1 {
+  max-width: 9.5ch;
+  margin-top: 22px;
+  color: var(--planhat-ink);
+  font-size: clamp(3.45rem, 8.8vw, 8.9rem);
+  line-height: 0.9;
+  text-transform: lowercase;
+}
+
+.lede {
+  max-width: 470px;
+  margin-top: 28px;
+  color: var(--planhat-muted);
+  font-size: clamp(0.92rem, 1.16vw, 1.12rem);
+}
+
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(520px, 100%);
+  margin-top: 44px;
+  border-top: 1px solid var(--planhat-line);
+  border-left: 1px solid var(--planhat-line);
+}
+
+.stats-row span,
+.stats-row button {
+  min-height: 70px;
+  display: grid;
+  align-content: end;
+  border-right: 1px solid var(--planhat-line);
+  border-bottom: 1px solid var(--planhat-line);
+  padding: 12px;
+  color: var(--planhat-ink);
+  background: rgba(255, 255, 255, 0.34);
+  font-size: 0.72rem;
+  text-transform: lowercase;
+}
+.stats-row button {
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.stats-row button:hover:not(:disabled),
+.stats-row button:focus-visible {
+  color: var(--planhat-clay);
+  background: rgba(196, 84, 34, 0.08);
+  outline: none;
+}
+
+.stats-row button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.safety-message {
+  max-width: 520px;
+  margin-top: 16px;
+  border-left: 2px solid var(--planhat-clay);
+  padding-left: 12px;
+  color: var(--planhat-ink);
+  font-size: 0.82rem;
+}
+
+.earth-model {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  background: #0a1420;
+}
+
+.earth-model::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(248, 244, 236, 0.82) 0%, rgba(248, 244, 236, 0.28) 30%, transparent 52%),
+    radial-gradient(circle at 70% 48%, transparent 0 30%, rgba(10, 20, 32, 0.18) 58%, rgba(10, 20, 32, 0.32) 100%);
+}
+
+.earth-model::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 1;
+  height: 38%;
+  pointer-events: none;
+  background: linear-gradient(transparent, rgba(10, 20, 32, 0.2));
+}
+
+.earth-model canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  cursor: grab;
+  touch-action: none;
+}
+
+.earth-model:active canvas {
+  cursor: grabbing;
+}
+
+.earthquake-feed-status {
+  position: absolute;
+  right: clamp(24px, 4vw, 64px);
+  top: clamp(24px, 4vw, 64px);
+  z-index: 6;
+  min-width: 196px;
+  border: 1px solid var(--planhat-line);
+  padding: 14px 16px;
+  color: var(--planhat-ink);
+  background: var(--planhat-glass);
+  box-shadow: 0 24px 70px rgba(22, 18, 15, 0.12);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  text-align: left;
+  text-transform: lowercase;
+  backdrop-filter: blur(18px);
+}
+
+.earthquake-feed-status::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: var(--planhat-clay);
+  box-shadow: 0 0 0 5px rgba(196, 84, 34, 0.16);
+}
+
+.earthquake-feed-status[data-status='error']::before {
+  background: #16120f;
+  box-shadow: 0 0 0 5px rgba(22, 18, 15, 0.12);
+}
+
+.earthquake-detail {
+  position: absolute;
+  right: clamp(24px, 4vw, 64px);
+  bottom: clamp(24px, 4vw, 64px);
+  z-index: 7;
+  width: min(390px, calc(100% - 48px));
+  border: 1px solid var(--planhat-line);
+  padding: 20px;
+  color: var(--planhat-ink);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 34px 90px rgba(22, 18, 15, 0.16);
+  text-align: left;
+  backdrop-filter: blur(22px);
+}
+
+.earthquake-detail-close {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--planhat-line);
+  border-radius: 0;
+  color: var(--planhat-ink);
+  background: rgba(248, 244, 236, 0.68);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.earthquake-detail-kicker {
+  margin: 0 0 10px;
+  color: var(--planhat-clay);
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+}
+
+.earthquake-detail h2 {
+  max-width: calc(100% - 36px);
+  margin: 0 0 20px;
+  color: var(--planhat-ink);
+  font-size: clamp(1.25rem, 2vw, 1.72rem);
+  line-height: 1.04;
+  text-transform: lowercase;
+}
+
+.earthquake-detail dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin: 0 0 18px;
+  border-top: 1px solid var(--planhat-line);
+  border-left: 1px solid var(--planhat-line);
+}
+
+.earthquake-detail dl div {
+  min-height: 70px;
+  border-right: 1px solid var(--planhat-line);
+  border-bottom: 1px solid var(--planhat-line);
+  padding: 10px;
+}
+
+.earthquake-detail dt {
+  color: var(--planhat-muted);
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+}
+
+.earthquake-detail dd {
+  margin: 8px 0 0;
+  color: var(--planhat-ink);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.earthquake-alert {
+  margin: 0 0 14px;
+  border-left: 2px solid var(--planhat-clay);
+  padding-left: 10px;
+  color: var(--planhat-clay);
+}
+
+.earthquake-detail a {
+  display: inline-flex;
+  border: 1px solid var(--planhat-clay);
+  padding: 9px 12px;
+  color: var(--planhat-clay);
+  background: rgba(196, 84, 34, 0.08);
+  font-size: 0.78rem;
+  text-decoration: none;
+  text-transform: lowercase;
+}
+
+@media (max-width: 900px) {
+  body {
+    overflow: auto;
+  }
+
+  .app-shell,
+  .hero-panel,
+  .earth-model {
+    min-height: 100svh;
+  }
+
+  .hero-panel::after {
+    inset: 12px;
+  }
+
+  .hero-copy {
+    width: 100%;
+    min-height: 52svh;
+    align-content: start;
+    padding: 72px 22px 0;
+  }
+
+  .hero-copy h1 {
+    max-width: 8.5ch;
+  }
+
+  .lede {
+    max-width: 340px;
+  }
+
+  .stats-row {
+    width: 100%;
+    margin-top: 30px;
+  }
+
+  .stats-row span,
+  .stats-row button {
+    min-height: 58px;
+    padding: 9px;
+    font-size: 0.65rem;
+  }
+
+  .earthquake-feed-status {
+    left: 22px;
+    right: auto;
+    top: auto;
+    bottom: 22px;
+    min-width: 0;
+    max-width: calc(100% - 44px);
+    font-size: 0.68rem;
+  }
+
+  .earthquake-detail {
+    left: 22px;
+    right: 22px;
+    bottom: 74px;
+    width: auto;
+    max-height: 45svh;
+    overflow: auto;
+    padding: 16px;
+  }
+
+  .earthquake-detail dl {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+
+
