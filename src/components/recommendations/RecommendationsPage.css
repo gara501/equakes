@@ -1,0 +1,213 @@
+.app-shell.app-shell-preparedness {
+  min-height: 100svh;
+  height: 100svh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background:
+    linear-gradient(180deg, rgba(10, 20, 32, 0.94) 0%, rgba(10, 20, 32, 0.86) 100%),
+    #0a1420;
+}
+
+.preparedness-page,
+.recommendations-page {
+  --primary-color: #c45422;
+  --success-color: #39d98a;
+  --error-color: #ff6b57;
+  --warning-color: #ffd43b;
+  --radius-md: 0;
+  --surface-color: rgba(15, 24, 33, 0.82);
+  --surface-border: rgba(248, 244, 236, 0.16);
+  --surface-text: #f8f4ec;
+  --surface-muted: rgba(248, 244, 236, 0.68);
+  --surface-shadow: 0 28px 74px rgba(0, 0, 0, 0.28);
+  position: relative;
+  min-height: 100%;
+  padding: 28px 22px 42px;
+  color: var(--surface-text);
+  overflow: visible;
+}
+
+.preparedness-page::before,
+.recommendations-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(248, 244, 236, 0.12) 0%, transparent 30%),
+    radial-gradient(circle at 18% 14%, rgba(196, 84, 34, 0.2) 0, transparent 30%),
+    radial-gradient(circle at 82% 22%, rgba(255, 212, 59, 0.12) 0, transparent 24%);
+}
+
+.preparedness-page__intro,
+.preparedness-page__layout,
+.recommendations-page__intro,
+.recommendations-page__layout {
+  position: relative;
+  z-index: 1;
+}
+
+.preparedness-page__intro,
+.recommendations-page__intro {
+  display: grid;
+  gap: 20px;
+  margin: 0 auto 24px;
+  width: min(1280px, 100%);
+  animation: recommend-fade-in 0.45s ease;
+}
+
+.preparedness-page__copy,
+.recommendations-page__copy {
+  max-width: 760px;
+}
+
+.preparedness-page__copy h1,
+.recommendations-page__copy h1 {
+  max-width: 8.6ch;
+  margin-top: 16px;
+  color: #f8f4ec;
+  font-size: clamp(3rem, 10vw, 6.2rem);
+  line-height: 0.9;
+  text-transform: lowercase;
+}
+
+.preparedness-page__copy .lede,
+.recommendations-page__copy .lede {
+  max-width: 54ch;
+  color: rgba(248, 244, 236, 0.76);
+}
+
+.preparedness-page__back,
+.recommendations-page__back {
+  align-self: start;
+  color: #f8f4ec;
+  background: rgba(248, 244, 236, 0.08);
+}
+
+.preparedness-page__back:hover,
+.preparedness-page__back:focus-visible,
+.recommendations-page__back:hover,
+.recommendations-page__back:focus-visible {
+  color: #f8f4ec;
+  background: rgba(248, 244, 236, 0.14);
+}
+
+.preparedness-page__layout,
+.recommendations-page__layout {
+  display: grid;
+  gap: 20px;
+  margin: 0 auto;
+  width: min(1280px, 100%);
+}
+
+.preparedness-page__layout--single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.preparedness-page__layout--narrow {
+  width: min(880px, 100%);
+}
+
+.recommend-tool {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--surface-border);
+  padding: 20px;
+  background: var(--surface-color);
+  box-shadow: var(--surface-shadow);
+  backdrop-filter: blur(18px);
+}
+
+.recommend-tool::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(248, 244, 236, 0.05) 0%, transparent 38%);
+}
+
+.recommend-tool__header,
+.recommend-tool__intro,
+.recommend-tool__body {
+  position: relative;
+  z-index: 1;
+}
+
+.recommend-tool__header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.recommend-tool__eyebrow {
+  color: var(--surface-muted);
+  font-size: 0.68rem;
+  text-transform: lowercase;
+}
+
+.recommend-tool__header h2 {
+  margin-top: 8px;
+  color: var(--surface-text);
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  line-height: 1.04;
+  text-transform: lowercase;
+}
+
+.recommend-tool__badge {
+  display: inline-grid;
+  min-height: 34px;
+  place-items: center;
+  border: 1px solid rgba(248, 244, 236, 0.14);
+  padding: 0 12px;
+  color: rgba(248, 244, 236, 0.74);
+  font-size: 0.7rem;
+  text-transform: lowercase;
+}
+
+.recommend-tool__intro {
+  margin-top: 14px;
+  color: rgba(248, 244, 236, 0.76);
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+@keyframes recommend-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (min-width: 900px) {
+  .preparedness-page,
+  .recommendations-page {
+    padding: 34px 28px 52px;
+  }
+
+  .preparedness-page__intro,
+  .recommendations-page__intro {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    margin-bottom: 28px;
+  }
+
+  .recommendations-page__layout {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: start;
+  }
+
+  .preparedness-page__layout:not(.preparedness-page__layout--single) {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: start;
+  }
+
+  .recommend-tool {
+    padding: 24px;
+  }
+}

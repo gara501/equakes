@@ -72,8 +72,8 @@
 
 .stats-row {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  width: min(430px, 100%);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: min(820px, 100%);
   margin-top: 44px;
   border-top: 1px solid var(--planhat-line);
   border-left: 1px solid var(--planhat-line);
@@ -209,6 +209,13 @@
 
 .earth-model:active canvas {
   cursor: grabbing;
+}
+
+.page-loader {
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  padding: 24px;
 }
 
 .earthquake-feed-status {
@@ -497,6 +504,7 @@
   }
 
   .stats-row {
+    grid-template-columns: 1fr;
     width: min(430px, 100%);
     margin-top: 30px;
   }

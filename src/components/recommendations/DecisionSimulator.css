@@ -1,0 +1,189 @@
+.decision-simulator {
+  --sim-surface: rgba(15, 24, 33, 0.78);
+  --sim-border: rgba(248, 244, 236, 0.16);
+  --sim-success: #39d98a;
+  --sim-warning: #ffd43b;
+  --sim-error: #ff6b57;
+}
+
+.decision-simulator__body {
+  display: grid;
+  gap: 18px;
+  margin-top: 28px;
+  animation: recommend-fade-in 0.35s ease;
+}
+
+.decision-simulator__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.decision-simulator__meta span,
+.decision-simulator__results span {
+  color: rgba(248, 244, 236, 0.64);
+  font-size: 0.72rem;
+  text-transform: lowercase;
+}
+
+.decision-simulator__meta strong,
+.decision-simulator__time strong,
+.decision-simulator__question h3,
+.decision-simulator__results strong {
+  color: #f8f4ec;
+}
+
+.decision-simulator__meta strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.92rem;
+}
+
+.decision-simulator__time strong {
+  font-size: 1rem;
+}
+
+.decision-simulator__timer {
+  height: 10px;
+  overflow: hidden;
+  background: rgba(248, 244, 236, 0.08);
+}
+
+.decision-simulator__timerFill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--sim-warning), #ff8859);
+  transform-origin: left center;
+  animation-name: simulator-countdown;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-play-state: paused;
+}
+
+.decision-simulator__timerFill.is-running {
+  animation-play-state: running;
+}
+
+.decision-simulator__timerFill.is-paused {
+  animation-play-state: paused;
+}
+
+.decision-simulator__question h3 {
+  font-size: 1.2rem;
+  line-height: 1.2;
+}
+
+.decision-simulator__options {
+  display: grid;
+  gap: 10px;
+}
+
+.decision-simulator__option,
+.decision-simulator__feedback button,
+.decision-simulator__results button {
+  border: 1px solid var(--sim-border);
+  padding: 16px;
+  color: #f8f4ec;
+  background: rgba(248, 244, 236, 0.04);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.decision-simulator__option {
+  display: grid;
+  gap: 10px;
+}
+
+.decision-simulator__option:hover:not(:disabled),
+.decision-simulator__option:focus-visible,
+.decision-simulator__feedback button:hover,
+.decision-simulator__feedback button:focus-visible,
+.decision-simulator__results button:hover,
+.decision-simulator__results button:focus-visible {
+  border-color: rgba(248, 244, 236, 0.3);
+  background: rgba(248, 244, 236, 0.1);
+  outline: none;
+}
+
+.decision-simulator__option span {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  color: #0a1420;
+  background: #f8f4ec;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.decision-simulator__option strong {
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+
+.decision-simulator__option:disabled {
+  cursor: default;
+}
+
+.decision-simulator__option.is-selected {
+  border-color: rgba(248, 244, 236, 0.24);
+}
+
+.decision-simulator__option.is-correct {
+  border-color: rgba(57, 217, 138, 0.34);
+  background: rgba(57, 217, 138, 0.12);
+}
+
+.decision-simulator__option.is-incorrect {
+  border-color: rgba(255, 107, 87, 0.34);
+  background: rgba(255, 107, 87, 0.12);
+}
+
+.decision-simulator__feedback,
+.decision-simulator__results {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--sim-border);
+  padding: 18px;
+  background: rgba(248, 244, 236, 0.04);
+  animation: recommend-fade-in 0.3s ease;
+}
+
+.decision-simulator__feedback strong,
+.decision-simulator__results strong {
+  font-size: 1rem;
+}
+
+.decision-simulator__feedback p,
+.decision-simulator__results p {
+  color: rgba(248, 244, 236, 0.74);
+  font-size: 0.88rem;
+  line-height: 1.52;
+}
+
+.decision-simulator__feedback.is-positive {
+  border-color: rgba(57, 217, 138, 0.3);
+}
+
+.decision-simulator__feedback.is-negative {
+  border-color: rgba(255, 107, 87, 0.28);
+}
+
+.decision-simulator__results strong {
+  font-size: clamp(2.4rem, 7vw, 4rem);
+  line-height: 0.95;
+}
+
+@keyframes simulator-countdown {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}

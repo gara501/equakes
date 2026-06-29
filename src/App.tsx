@@ -1,6 +1,5 @@
-﻿import { useCallback, useState } from 'react'
+import { Suspense, lazy, useCallback, useState } from 'react'
 import { EarthModel } from './components/EarthModel'
-import { SeismicScalePage } from './components/SeismicScalePage'
 import './App.css'
 
 interface LocationRequest {
@@ -9,7 +8,37 @@ interface LocationRequest {
   longitude: number
 }
 
-type AppPage = 'earth' | 'scale'
+const SeismicScalePage = lazy(() =>
+  import('./components/SeismicScalePage').then((module) => ({
+    default: module.SeismicScalePage,
+  })),
+)
+
+const BackpackPage = lazy(() =>
+  import('./components/BackpackPage').then((module) => ({
+    default: module.BackpackPage,
+  })),
+)
+
+const SimulatorPage = lazy(() =>
+  import('./components/SimulatorPage').then((module) => ({
+    default: module.SimulatorPage,
+  })),
+)
+
+type AppPage = 'backpack' | 'earth' | 'scale' | 'simulator'
+
+function PageLoader({ label }: { label: string }) {
+  return (
+    <div className="page-loader" aria-live="polite">
+      <div className="scene-loader">
+        <div className="scene-loader-spinner" />
+        <strong>{label}</strong>
+        <span>Preparando interfaz</span>
+      </div>
+    </div>
+  )
+}
 
 function App() {
   const [activePage, setActivePage] = useState<AppPage>('earth')
@@ -58,7 +87,29 @@ function App() {
   if (activePage === 'scale') {
     return (
       <main className="app-shell app-shell-scale">
-        <SeismicScalePage onBack={() => setActivePage('earth')} />
+        <Suspense fallback={<PageLoader label="Cargando escala sismologica" />}>
+          <SeismicScalePage onBack={() => setActivePage('earth')} />
+        </Suspense>
+      </main>
+    )
+  }
+
+  if (activePage === 'backpack') {
+    return (
+      <main className="app-shell app-shell-preparedness">
+        <Suspense fallback={<PageLoader label="Cargando mochila" />}>
+          <BackpackPage onBack={() => setActivePage('earth')} />
+        </Suspense>
+      </main>
+    )
+  }
+
+  if (activePage === 'simulator') {
+    return (
+      <main className="app-shell app-shell-preparedness">
+        <Suspense fallback={<PageLoader label="Cargando simulador" />}>
+          <SimulatorPage onBack={() => setActivePage('earth')} />
+        </Suspense>
       </main>
     )
   }
@@ -84,6 +135,12 @@ function App() {
             </button>
             <button type="button" onClick={() => setActivePage('scale')}>
               Escala sismológica
+            </button>
+            <button type="button" onClick={() => setActivePage('backpack')}>
+              Mochila
+            </button>
+            <button type="button" onClick={() => setActivePage('simulator')}>
+              Simulador
             </button>
           </div>
           {safetyMessage ? <p className="safety-message">{safetyMessage}</p> : null}
